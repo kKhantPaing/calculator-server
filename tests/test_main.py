@@ -1,7 +1,8 @@
 import math
 from fastapi.testclient import TestClient
-from main import app, history
-from models import Expression, CalculatorLog
+from app.main import app
+from app.dependencies import history
+from app.schemas import Expression, CalculatorLog
 
 client = TestClient(app)
 
