@@ -12,7 +12,6 @@ client = TestClient(app)
 def test_expression_model():
     expr = Expression(expr="10 + 20%")
     assert expr.expr == "10 + 20%"
-    assert expr.expand_percent() == "10 + ((20/100)*10)"
 
 
 def test_calculator_log_model():

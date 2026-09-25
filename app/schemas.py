@@ -1,26 +1,22 @@
-import sys
 from pydantic import BaseModel
 
-try:
-    from app.dependencies import expand_percent
-except ImportError:
-    from .dependencies import expand_percent
 
-
-class Expression(BaseModel):
+class BaseExpression(BaseModel):
     expr: str
 
-    def expand_percent(self) -> str:
-        """Return the expression string after expanding % symbols."""
-        return expand_percent(self.expr)
+
+class ExpressionIn(BaseExpression):
+    pass
 
 
-class CalculatorLog(BaseModel):
-    timestamp: str | None = None
-    expr: str
+# Expression is ExpressionIn
+Expression = ExpressionIn
+
+
+class ExpressionOut(Expression):
     result: float | int
+    timestamp: str | None = None
 
 
-# Backwards compatibility if any code or grader still imports `models`
-sys.modules.setdefault("models", sys.modules[__name__])
-
+# CalculatorLog is ExpressionOut, which is a subclass of Expression
+CalculatorLog = ExpressionOut

@@ -3,27 +3,26 @@ import re
 from collections import deque
 from asteval import Interpreter
 
-# ---------- Safe Evaluator ----------
+# Safe evaluator
 aeval = Interpreter(minimal=True, usersyms={"pi": math.pi, "e": math.e})
 
-# ---------- In-memory History ----------
+# In-memory history
 HISTORY_MAX = 1000
 history = deque(maxlen=HISTORY_MAX)
 
-# ---------- Percent Expansion Helper ----------
+
+def get_history() -> deque:
+    return history
+
+
+# Percent expansion
 _percent_pair = re.compile(
-    r"""
-    (?P<a>\d+(?:\.\d+)?)
-    \s*(?P<op>[+\-*/])\s*
-    (?P<b>\d+(?:\.\d+)?)%
-""",
-    re.VERBOSE,
+    r"(?P<a>\d+(?:\.\d+)?)\s*(?P<op>[+\-*/])\s*(?P<b>\d+(?:\.\d+)?)%"
 )
 _number_percent = re.compile(r"(?P<n>\d+(?:\.\d+)?)%")
 
 
 def expand_percent(expr: str) -> str:
-    """Handle A op B% and standalone N% patterns."""
     s = expr
     while True:
         m = _percent_pair.search(s)
@@ -38,15 +37,4 @@ def expand_percent(expr: str) -> str:
             repl = f"{a} / ({b}/100)"
         s = s[: m.start()] + repl + s[m.end() :]
 
-    s = _number_percent.sub(lambda m: f"({m.group('n')}/100)", s)
-    return s
-
-
-def get_history() -> deque:
-    """Dependency helper to get the history deque."""
-    return history
-
-
-def get_aeval() -> Interpreter:
-    """Dependency helper to get the asteval interpreter."""
-    return aeval
+    return _number_percent.sub(lambda m: f"({m.group('n')}/100)", s)
