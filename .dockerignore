@@ -1,0 +1,24 @@
+# Virtual environments
+.venv
+.venv/
+
+# Git metadata
+.git
+.git/
+.gitignore
+
+# Python caches and bytecode
+__pycache__
+**/__pycache__
+*.py[cod]
+**/*.py[cod]
+*$py.class
+.pytest_cache
+**/.pytest_cache
+.mypy_cache
+.ruff_cache
+
+# Environment files
+.env
+.env.*
+

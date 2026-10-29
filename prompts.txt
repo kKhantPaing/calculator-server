@@ -1,0 +1,71 @@
+Prompt 1 — Project Discovery & Planning:
+I want to run my existing FastAPI calculator server with Docker Compose
+for local development.
+
+Project facts:
+- Dockerfile and compose.yaml will be in the project root.
+- Application code is in app/main.py; the FastAPI instance is named app.
+- Python version: 3.15.2 (project uses >=3.13 / 3.13).
+- pyproject.toml and uv.lock are in the project root.
+- I use uv on the host and export requirements.txt for pip in the image.
+- Current working startup command: uv run fastapi dev app/main.py.
+- Existing calculator routes must continue to work.
+
+First, summarize the layout, entry point, and dependency workflow.
+Ask about any missing information that would change the generated files.
+Do not invent files or dependencies.
+
+---
+
+Prompt 2 — Generate Dockerfile and .dockerignore:
+Write a Dockerfile and .dockerignore for the project described above.
+
+Requirements:
+- Build from the project root.
+- Use a Python base image compatible with my project.
+- Install dependencies from the exported requirements.txt inside the image.
+- Copy the application into the image.
+- Start FastAPI in development mode, listening on 0.0.0.0:5000.
+- Keep dependency installation in a layer that can be reused when only
+  application source changes.
+- Exclude the host .venv, .git, Python caches, and .env from the build context.
+
+Return each file in its own code block with its filename.
+Explain FROM, WORKDIR, COPY, RUN, and CMD using this project.
+State which source files COPY reads and where they end up in the container.
+List any assumptions and the commands I should use to verify the result.
+
+---
+
+Prompt 3 — Generate compose.yaml:
+Now write compose.yaml for that Dockerfile, at the project root.
+
+Requirements:
+- Define services named backend and database.
+- Build backend from the project root.
+- Map host port 34242 to backend container port 5000.
+- Mount ./app at /app/app for source-code reload without hiding dependencies.
+- Pass DATABASE_URL to backend using the database service name and port 3306.
+- Use mysql:8.4 with database appdb and application user appuser.
+- For this disposable classroom example, use classroom-app as the application
+  password and classroom-root as the root password.
+- Store MySQL data in the named volume dbdata at /var/lib/mysql.
+- Optionally expose MySQL only on host loopback, at 127.0.0.1:54242.
+- Add a health check that queries MySQL using the application account.
+- Start backend after the database health check succeeds.
+
+Explain:
+1. Host ports versus container ports.
+2. Why backend connects to database:3306 rather than localhost:54242.
+3. The difference between the source bind mount and database named volume.
+4. Database readiness versus a container merely being started.
+5. What docker compose down and docker compose down -v each remove.
+
+Return the complete Compose file and verification commands.
+Check that its paths, credentials, ports, and command agree with the Dockerfile.
+
+---
+
+Prompt 4 — Add /test-db Endpoint & Verify:
+Add GET /test-db route to app/main.py using DATABASE_URL and SQLAlchemy to verify database connectivity on port 34242 while keeping existing calculator routes working.
+
