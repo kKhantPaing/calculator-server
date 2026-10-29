@@ -1,15 +1,17 @@
-Prompt 1 — Project Discovery & Planning:
 I want to run my existing FastAPI calculator server with Docker Compose
 for local development.
 
 Project facts:
 - Dockerfile and compose.yaml will be in the project root.
 - Application code is in app/main.py; the FastAPI instance is named app.
-- Python version: 3.15.2 (project uses >=3.13 / 3.13).
+- Python version: 3.15.2.
 - pyproject.toml and uv.lock are in the project root.
 - I use uv on the host and export requirements.txt for pip in the image.
 - Current working startup command: uv run fastapi dev app/main.py.
 - Existing calculator routes must continue to work.
+
+Here is my actual project file list and relevant dependency configuration:
+in server folder
 
 First, summarize the layout, entry point, and dependency workflow.
 Ask about any missing information that would change the generated files.
@@ -17,7 +19,6 @@ Do not invent files or dependencies.
 
 ---
 
-Prompt 2 — Generate Dockerfile and .dockerignore:
 Write a Dockerfile and .dockerignore for the project described above.
 
 Requirements:
@@ -37,7 +38,6 @@ List any assumptions and the commands I should use to verify the result.
 
 ---
 
-Prompt 3 — Generate compose.yaml:
 Now write compose.yaml for that Dockerfile, at the project root.
 
 Requirements:
@@ -66,6 +66,4 @@ Check that its paths, credentials, ports, and command agree with the Dockerfile.
 
 ---
 
-Prompt 4 — Add /test-db Endpoint & Verify:
-Add GET /test-db route to app/main.py using DATABASE_URL and SQLAlchemy to verify database connectivity on port 34242 while keeping existing calculator routes working.
-
+Add /test-db endpoint and switch backend host port back to 34242.
